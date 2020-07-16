@@ -14,6 +14,15 @@ background: linear-gradient(to bottom, #99ccff 0%, #ff9999 100%);
 button {
     padding:20px;
 }
+
+#wrapper{
+	display: flex;
+    justify-content: center;
+}
+
+
+
+
 #snakeImg {
 display:inline;
  width:40px;
@@ -44,9 +53,13 @@ display:inline;
 
 
 <p style="position: fixed; bottom: 0;text-align:center padding:10px;">This is the 2020 HackDay project created by HACK(H)ER, a team of 6 female interns. We built this game (referenced a tutorial for the basic snake game structure and added our own personalized twists) along with a webscraper to find broken inside links. </p>
-
-<canvas id = "gameCanvas" width="825" height="725"></canvas>
+<div id="wrapper">
+<canvas id = "gameCanvas" width="600" height="500"></canvas>
 </div>
+
+
+
+
 <script>
 
 
@@ -101,6 +114,11 @@ window.addEventListener("keydown", function(e) {
     hasMoved = false;
     canvas = document.getElementById("gameCanvas");
     context = canvas.getContext("2d");
+    
+
+    
+    
+    
     document.addEventListener("keydown", keyPush);
     setInterval(game, speed); 
     
@@ -134,7 +152,6 @@ window.addEventListener("keydown", function(e) {
     matlab.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Matlab_Logo.png/667px-Matlab_Logo.png";
     const geckoImg = new Image();
     geckoImg.src = "https://webstockreview.net/images/gecko-clipart-10.png";
-	//geckoImg.src = "https://library.kissclipart.com/20191028/evw/kissclipart-green-lizard-gecko-38c18fdcf2cf115e.png"
     function game() {
         
         player.move(xVelocity, yVelocity);
@@ -190,17 +207,23 @@ window.addEventListener("keydown", function(e) {
         show_image(geckoImg, gecko.x*gridSize, gecko.y*gridSize); // draw gecko
         drawScore();
     }
+    
+     function drawGradient() {
+      var grd = context.createLinearGradient(0, 0, 50, boardSize);
+      grd.addColorStop(0, '#bfb8d8');   
+      grd.addColorStop(1, '#fc9a9b');
+      context.fillStyle = grd;
+      context.fillRect(boardSize,0,200,boardSize);
+	}
 
     function drawScore() {
-        context.fillStyle="white";
-        context.fillRect(0,boardSize,boardSize,100);
-        context.fillStyle="black";
-        context.font="48px Arial";
+     
         
-        if (hasMoved && xVelocity == yVelocity) {
-            context.fillText("Game Over!", 60, boardSize + 50);
-        } else {
-            context.fillText("Score: " + score, 100,boardSize+50);
+        if (!(hasMoved && xVelocity == yVelocity)) {
+        	drawGradient();
+        context.fillStyle="black";
+        context.font="18px Arial";
+            context.fillText("Score: " + score, boardSize+10,30);
         }
     }
     
@@ -231,6 +254,11 @@ window.addEventListener("keydown", function(e) {
     	hasEnded = true;
         recentScores.addScore(score);
         showTopScores();
+         if (hasMoved && xVelocity == yVelocity) {
+         	context.font="24px Arial";
+            context.fillText("Game Over!", boardSize/2-50, 75);
+        }
+        
         tail = 5;
         score = 0;
         player.moveTo(10,10);
@@ -273,17 +301,22 @@ window.addEventListener("keydown", function(e) {
         ctx.drawImage(img, xpos, ypos, destWidth, destHeight);
     }
     
+    
+    
+    
   function showTopScores() {
-        context.fillStyle="white";
-        context.fillRect(boardSize,0,200,boardSize+100);
+  	 	drawGradient();
         context.fillStyle="black";
-        context.font="24px Arial";
+        context.font="18px Arial";
          var scores = recentScores.getScores();  
-         context.fillText("Top Scores", boardSize + 50, 30)
+         context.fillText("Top Scores", boardSize + 5, 20)
          for (i = 0; i < scores.length; i++) {  
-            context.fillText(scores[i], boardSize+100, 60 + 40*i);
+            context.fillText(scores[i], boardSize+45, 50 + 30*i);
          }
-    }
+    
+    
+  }
+  
 }
 
 class Location {
